@@ -34,6 +34,9 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.BillViewHolder
 
     private List<Bill> compare(List<Bill> list){
         ArrayList<Bill> nullList = dataHandler.readList();
+        if(nullList == null){
+            return list;
+        }
         for(Bill b : nullList){
             if (list.contains(b)) {
                 list.remove(b);

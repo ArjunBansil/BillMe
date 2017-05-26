@@ -6,7 +6,6 @@ import android.util.Log;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -48,7 +47,11 @@ public class DataHandler implements Serializable{
 
     public ArrayList<Bill> readList(){
         try{
-            FileInputStream fis = new FileInputStream(new File(context.getFilesDir(), fileName));
+            File file = new File(context.getFilesDir(), fileName);
+            if(!file.exists()){
+                return null;
+            }
+            FileInputStream fis = new FileInputStream(file);
             ObjectInputStream ois = new ObjectInputStream(fis);
             if(ois.readObject() instanceof ArrayList){
                 return (ArrayList<Bill>)ois.readObject();
