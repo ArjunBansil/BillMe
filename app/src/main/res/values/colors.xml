@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#283593</color>
+    <color name="colorPrimaryDark">#1a237e</color>
+    <color name="colorAccent">#3949ab</color>
+
+    <color name="vote_yes">#81c784</color>
+    <color name="vote_no">#ef5350</color>
+</resources>

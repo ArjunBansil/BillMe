@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">BillMe</string>
+    <string name="sunlight_api_key">4e700942b55a4240ae8a8ad398e8f309</string>
+    <string name="option1">See Upcoming Bills in the House</string>
+    <string name="consideration">Consideration</string>
+    <string name="description">Description</string>
+    <string name="bill_name">Bill Name</string>
+    <string name="leg_day">Legislation Day</string>
+    <string name="chamber">Chamber</string>
+    <string name="yes">In Favor Of</string>
+    <string name="no">Not in Favor</string>
+    <string name="warning">(Please click on the card to find out more about the bill before voting)</string>
+</resources>

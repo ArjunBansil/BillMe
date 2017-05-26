@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    card_view:cardCornerRadius="4dp"
+    android:id="@+id/bill_card"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:foreground="?android:attr/selectableItemBackground"
+    card_view:cardUseCompatPadding="true"
+    android:padding="10dp"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:textSize="20sp"
+            android:text="@string/description"
+            android:id="@+id/description"
+            android:textColor="@android:color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_marginStart="10dp"
+            android:textSize="14sp"
+            android:textColor="@android:color/black"
+            android:text="@string/consideration"
+            android:layout_below="@+id/description"
+            android:layout_marginTop="5dp"
+            android:id="@+id/consideration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_marginStart="10dp"
+            android:textSize="12sp"
+            android:text="@string/chamber"
+            android:layout_below="@+id/consideration"
+            android:id="@+id/chamber"
+            android:layout_marginTop="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_marginStart="10dp"
+            android:text="@string/leg_day"
+            android:textSize="12sp"
+            android:id="@+id/leg_day"
+            android:layout_below="@+id/chamber"
+            android:layout_marginTop="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_marginStart="10dp"
+            android:textSize="10sp"
+            android:layout_marginTop="5dp"
+            android:id="@+id/warning_text"
+            android:text="@string/warning"
+            android:layout_below="@+id/leg_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:layout_marginTop="10dp"
+            android:layout_below="@id/warning_text"
+            android:id="@+id/vote_yes"
+            android:text="@string/yes"
+            android:background="@color/vote_yes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/vote_no"
+            android:text="@string/no"
+            android:layout_below="@+id/vote_yes"
+            android:background="@color/vote_no"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+    </RelativeLayout>
+
+
+</android.support.v7.widget.CardView>
