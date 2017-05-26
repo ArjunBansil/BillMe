@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import com.keybored.voteme.R;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,10 +24,22 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.BillViewHolder
 
     private List<Bill> billList;
     public Context context;
+    public DataHandler dataHandler;
 
     public BillAdapter(List<Bill> billList, Context context){
-        this.billList = billList;
         this.context = context;
+        this.dataHandler = new DataHandler(this.context);
+        this.billList = compare(billList);
+    }
+
+    private List<Bill> compare(List<Bill> list){
+        ArrayList<Bill> nullList = dataHandler.readList();
+        for(Bill b : nullList){
+            if (list.contains(b)) {
+                list.remove(b);
+            }
+        }
+        return list;
     }
 
     @Override
@@ -70,7 +84,7 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.BillViewHolder
 
     public void removeAt(int position){
         Bill dump = billList.get(position);
-
+        dataHandler.addToNullList(dump);
         billList.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, getItemCount());
@@ -80,7 +94,6 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.BillViewHolder
     public BillViewHolder onCreateViewHolder(ViewGroup viewGroup, int i){
         View itemView = LayoutInflater.from(
                 viewGroup.getContext()).inflate(R.layout.bill_card, viewGroup, false);
-
         return new BillViewHolder(itemView);
     }
 

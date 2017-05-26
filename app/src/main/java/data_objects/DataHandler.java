@@ -25,7 +25,7 @@ public class DataHandler implements Serializable{
         this.context = context;
     }
 
-    private void addToNullList(Bill bill){
+    public void addToNullList(Bill bill){
         try{
             file = new File(context.getFilesDir(), fileName);
             if(!file.exists()){
@@ -46,7 +46,7 @@ public class DataHandler implements Serializable{
         }
     }
 
-    private ArrayList<Bill> readList(){
+    public ArrayList<Bill> readList(){
         try{
             FileInputStream fis = new FileInputStream(new File(context.getFilesDir(), fileName));
             ObjectInputStream ois = new ObjectInputStream(fis);
@@ -59,12 +59,21 @@ public class DataHandler implements Serializable{
         return null;
     }
 
-    private void writeList(ArrayList<Bill> list){
+    public void writeList(ArrayList<Bill> list){
         try {
             FileOutputStream fos = new FileOutputStream(new  File(context.getFilesDir(), fileName));
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(list);
             oos.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void delete(){
+        try{
+            File file = new File(context.getFilesDir(), fileName);
+            file.delete();
         }catch (Exception e){
             e.printStackTrace();
         }
