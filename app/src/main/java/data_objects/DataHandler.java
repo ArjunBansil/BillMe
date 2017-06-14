@@ -29,14 +29,17 @@ public class DataHandler implements Serializable{
             file = new File(context.getFilesDir(), fileName);
             if(!file.exists()){
                 Log.i("fun", "File doesn't exist ATM");
-                boolean f = file.mkdir();
-                if (f){
-                    Log.i("fun", "File does exist now");
-                }
                 ArrayList<Bill> list = new ArrayList<Bill>(); list.add(bill);
                 writeList(list);
+                Log.i("fun", "File created, added to file list");
             }else{
+                Log.i("fun", "Added to file list");
                 ArrayList<Bill> list = readList();
+                String f = "";
+                for(Bill b : list){
+                    f += b.getDescription() + "\n";
+                }
+                Log.i("fun", f);
                 list.add(bill);
                 writeList(list);
             }
@@ -46,6 +49,7 @@ public class DataHandler implements Serializable{
     }
 
     public ArrayList<Bill> readList(){
+        ArrayList<Bill> list = null;
         try{
             File file = new File(context.getFilesDir(), fileName);
             if(!file.exists()){
@@ -53,13 +57,12 @@ public class DataHandler implements Serializable{
             }
             FileInputStream fis = new FileInputStream(file);
             ObjectInputStream ois = new ObjectInputStream(fis);
-            if(ois.readObject() instanceof ArrayList){
-                return (ArrayList<Bill>)ois.readObject();
-            }else return null;
+            list = (ArrayList<Bill>)ois.readObject();
+            ois.close();
         }catch (Exception e){
             e.printStackTrace();
         }
-        return null;
+        return list;
     }
 
     public void writeList(ArrayList<Bill> list){

@@ -24,25 +24,12 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.BillViewHolder
 
     private List<Bill> billList;
     public Context context;
-    public DataHandler dataHandler;
+    private DataHandler dh;
 
     public BillAdapter(List<Bill> billList, Context context){
         this.context = context;
-        this.dataHandler = new DataHandler(this.context);
-        this.billList = compare(billList);
-    }
-
-    private List<Bill> compare(List<Bill> list){
-        ArrayList<Bill> nullList = dataHandler.readList();
-        if(nullList == null){
-            return list;
-        }
-        for(Bill b : nullList){
-            if (list.contains(b)) {
-                list.remove(b);
-            }
-        }
-        return list;
+        this.billList = billList;
+        this.dh = new DataHandler(this.context);
     }
 
     @Override
@@ -87,7 +74,7 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.BillViewHolder
 
     public void removeAt(int position){
         Bill dump = billList.get(position);
-        dataHandler.addToNullList(dump);
+        dh.addToNullList(dump);
         billList.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, getItemCount());

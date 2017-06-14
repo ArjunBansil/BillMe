@@ -21,15 +21,20 @@ import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 import data_objects.Bill;
 import data_objects.BillAdapter;
+import data_objects.DataHandler;
 
 public class ViewBills extends AppCompatActivity {
 
-    String url = "https://congress.api.sunlightfoundation.com/upcoming_bills?chamber=house&order=scheduled_at?apikey=";
+    String url = "https://congress.api.sunlightfoundation.com/upcoming_bills?order=scheduled_at?apikey=";
     JSONObject json = null;
-    ArrayList<Bill> list = new ArrayList<>();
     RecyclerView recList;
     BillAdapter ba;
 
@@ -70,14 +75,9 @@ public class ViewBills extends AppCompatActivity {
         private ProgressDialog progressDialog = new ProgressDialog(ViewBills.this);
         @Override
         protected void onPreExecute(){
-            progressDialog.setMessage("Pulling the upcoming bills");
+            progressDialog.setMessage("Pulling upcoming bills");
             progressDialog.show();
-            progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialogInterface) {
-                    JSON_Pull.this.cancel(true);
-                }
-            });
+
         }
 
         @Override
@@ -94,6 +94,7 @@ public class ViewBills extends AppCompatActivity {
         @Override
         protected void onPostExecute(JSONObject j){
             super.onPostExecute(j);
+            progressDialog.dismiss();
             json = j;
             recList = (RecyclerView)findViewById(R.id.bill_list);
             recList.setHasFixedSize(true);
@@ -105,15 +106,50 @@ public class ViewBills extends AppCompatActivity {
             try{
                 JSONArray array = j.getJSONArray("results");
                 for(int i = 0; i < array.length(); i++){
+
                     JSONObject object = array.getJSONObject(i);
-                    Bill b = new Bill(object.getString("chamber"), object.getString("legislative_day"),
-                            object.getString("consideration"), object.getString("description"),
-                            object.getString("bill_url"));
+                    Bill b;
+                    if(object.getString("chamber").equals("senate")){
+                        b = new Bill(object.getString("chamber"), object.getString("legislative_day"),
+                                "", object.getString("context"),
+                                object.getString("url"));
+                    }else {
+                        b = new Bill(object.getString("chamber"), object.getString("legislative_day"),
+                                object.getString("consideration"), object.getString("description"),
+                                object.getString("bill_url"));
+                    }
                     list.add(b);
                 }
+                DataHandler dataHandler = new DataHandler(ViewBills.this);
+                ArrayList<Bill> votedList = dataHandler.readList();
+                ArrayList<Bill> finalList;
+                if(votedList == null){
+                    Log.i("fun", "Voted List is null");
+                    finalList = list;
+                }else{
+                    Log.i("fun", "Voted list isn't null");
+                    finalList = list;
+                    Iterator<Bill> i1 = finalList.iterator();
 
-                ba = new BillAdapter(list, ViewBills.this);
+                    while(i1.hasNext()){
+                        Iterator<Bill> i2 = votedList.iterator();
+                        Bill b1 = i1.next();
+                        while(i2.hasNext()){
+                            Bill b2 = i2.next();
+                            if(b1.equals(b2)){
+                                i1.remove();
+                            }
+                        }
+                    }
+
+                }
+                for(Bill b : list){
+                    Log.i("fun", b.getDescription());
+                }
+                ba = new BillAdapter(finalList, ViewBills.this);
+                Log.i("fun", "Adapter has been initialized");
                 recList.setAdapter(ba);
+                Log.i("fun", "Adapter has been set");
             }catch (Exception e){
                 Log.i("failure", "On Post Execute has failed");
                 e.printStackTrace();
