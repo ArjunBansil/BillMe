@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/viewbills_layout"
     tools:context="com.keybored.voteme.ViewBills">
 
     <android.support.v7.widget.RecyclerView
@@ -13,4 +13,29 @@
 
     </android.support.v7.widget.RecyclerView>
 
-</android.support.constraint.ConstraintLayout>
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/max_height_header" >
+
+        <ImageView
+            android:id="@+id/header_image"
+            android:src="@drawable/cap_building"
+            android:scaleType="centerCrop"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_vertical"
+            android:text="@string/upcoming"
+            android:layout_marginLeft="10dp"
+            android:textSize="25sp"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="20dp"/>
+
+    </FrameLayout>
+
+</FrameLayout>

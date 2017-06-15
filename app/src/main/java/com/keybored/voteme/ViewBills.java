@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,6 +33,9 @@ import java.util.Set;
 import data_objects.Bill;
 import data_objects.BillAdapter;
 import data_objects.DataHandler;
+import it.carlom.stikkyheader.core.StikkyHeaderBuilder;
+import it.carlom.stikkyheader.core.animator.AnimatorBuilder;
+import it.carlom.stikkyheader.core.animator.HeaderStikkyAnimator;
 
 public class ViewBills extends AppCompatActivity {
 
@@ -37,13 +43,16 @@ public class ViewBills extends AppCompatActivity {
     JSONObject json = null;
     RecyclerView recList;
     BillAdapter ba;
+    ViewGroup view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_bills);
+        getSupportActionBar().hide();
         String key = this.getResources().getString(R.string.sunlight_api_key);
         url += key;
+        view = (ViewGroup)findViewById(R.id.viewbills_layout);
         new JSON_Pull().execute("params");
 
     }
@@ -148,6 +157,12 @@ public class ViewBills extends AppCompatActivity {
                 }
                 ba = new BillAdapter(finalList, ViewBills.this);
                 Log.i("fun", "Adapter has been initialized");
+                StikkyHeaderBuilder.stickTo(recList)
+                        .setHeader(R.id.header, view)
+                        .minHeightHeaderDim(R.dimen.min_height_header)
+                        .animator(new Animator())
+                        .build();
+
                 recList.setAdapter(ba);
                 Log.i("fun", "Adapter has been set");
             }catch (Exception e){
@@ -157,5 +172,15 @@ public class ViewBills extends AppCompatActivity {
         }
 
     }
+
+    private class Animator extends HeaderStikkyAnimator{
+        @Override
+        public AnimatorBuilder getAnimatorBuilder(){
+            View mHeaderImage = getHeader().findViewById(R.id.header_image);
+            return AnimatorBuilder.create().applyVerticalParallax(mHeaderImage);
+        }
+    }
+
+
 }
 

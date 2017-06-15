@@ -2,6 +2,7 @@
     <string name="app_name">BillMe</string>
     <string name="sunlight_api_key">4e700942b55a4240ae8a8ad398e8f309</string>
     <string name="option1">See Upcoming Bills in the House</string>
+    <string name="upcoming">Upcoming Bills</string>
     <string name="consideration">Consideration</string>
     <string name="description">Description</string>
     <string name="bill_name">Bill Name</string>
