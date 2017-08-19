@@ -7,4 +7,5 @@
     <dimen name="min_height_header">120dp</dimen>
     <dimen name="max_height_header">300dp</dimen>
     <dimen name="toolbar_header">56dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>

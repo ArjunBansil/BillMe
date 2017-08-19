@@ -1,4 +1,6 @@
 <resources>
+
+    <!--General stuff for  -->
     <string name="app_name">BillMe</string>
     <string name="sunlight_api_key">4e700942b55a4240ae8a8ad398e8f309</string>
     <string name="option1">See Upcoming Bills in the House</string>
@@ -11,4 +13,15 @@
     <string name="yes">In Favor Of</string>
     <string name="no">Not in Favor</string>
     <string name="warning">(Please click on the card to find out more about the bill before voting)</string>
+    <string name="title_activity_login">Sign in</string>
+
+
+    <!-- Strings for Log-In Crap -->
+    <string name="hint_username">Enter Username</string>
+    <string name="hint_password">Enter Password</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="verify_email">Verify Email Address</string>
+    <string name="create_account">Create Account</string>
+
 </resources>
