@@ -19,6 +19,7 @@
     <!-- Strings for Log-In Crap -->
     <string name="hint_username">Enter Username</string>
     <string name="hint_password">Enter Password</string>
+    <string name="log_in">Log in</string>
     <string name="sign_in">Sign In</string>
     <string name="sign_out">Sign Out</string>
     <string name="verify_email">Verify Email Address</string>
