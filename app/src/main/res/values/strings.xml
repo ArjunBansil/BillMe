@@ -1,8 +1,9 @@
 <resources>
 
-    <!--General stuff for  -->
+    <!--General stuff for application -->
     <string name="app_name">BillMe</string>
     <string name="sunlight_api_key">4e700942b55a4240ae8a8ad398e8f309</string>
+    <string name="propublica_api_key">25ubFmz1uqxqhvhSyzPwaUL8RoOVETV8wfCPaZl3</string>
     <string name="option1">See Upcoming Bills in the House</string>
     <string name="upcoming">Upcoming Bills</string>
     <string name="consideration">Consideration</string>
@@ -12,17 +13,23 @@
     <string name="chamber">Chamber</string>
     <string name="yes">In Favor Of</string>
     <string name="no">Not in Favor</string>
-    <string name="warning">(Please click on the card to find out more about the bill before voting)</string>
+    <string name="warning">Please click on the card to find out more about the bill before voting</string>
     <string name="title_activity_login">Sign in</string>
 
 
     <!-- Strings for Log-In Crap -->
-    <string name="hint_username">Enter Username</string>
+    <string name="hint_username">Enter Email</string>
     <string name="hint_password">Enter Password</string>
     <string name="log_in">Log in</string>
+    <string name="logged_in">Logged In</string>
     <string name="sign_in">Sign In</string>
     <string name="sign_out">Sign Out</string>
+    <string name="go_to_main">Go to he Main Screen</string>
     <string name="verify_email">Verify Email Address</string>
     <string name="create_account">Create Account</string>
+
+
+    <!-- The Sunlight Congress API is not working and I don't know why  -->
+
 
 </resources>

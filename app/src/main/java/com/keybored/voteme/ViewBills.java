@@ -40,16 +40,26 @@ import it.carlom.stikkyheader.core.animator.HeaderStikkyAnimator;
 public class ViewBills extends AppCompatActivity {
 
     String url = "https://congress.api.sunlightfoundation.com/upcoming_bills?order=scheduled_at?apikey=";
+    private ProgressDialog dialog;
     JSONObject json = null;
     RecyclerView recList;
     BillAdapter ba;
     ViewGroup view;
+
+    private void doDialog(){
+        if(!dialog.isShowing()) dialog.show();
+        else dialog.dismiss();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_bills);
         getSupportActionBar().hide();
+        dialog = new ProgressDialog(this);
+        dialog.setMessage("Please wait...");
+        dialog.setCancelable(false);
+
         String key = this.getResources().getString(R.string.sunlight_api_key);
         url += key;
         view = (ViewGroup)findViewById(R.id.viewbills_layout);

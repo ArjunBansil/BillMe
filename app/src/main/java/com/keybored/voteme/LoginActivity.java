@@ -1,5 +1,7 @@
 package com.keybored.voteme;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
@@ -13,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -25,12 +28,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private static final String tag = "auth";
     private EditText emailField, passwordField;
+    private ProgressDialog pDialog;
 
     private LinearLayout loginFields, loginButtons, signedInButtons;
+    private TextView status;
     private CoordinatorLayout parentView;
 
     private FirebaseAuth mAuth;
-    private Button signIn, signOut, createAccount, verify;
+    private Button signIn, signOut, createAccount, verify, goToMain;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +46,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         emailField = (EditText)findViewById(R.id.username_input);
         passwordField = (EditText)findViewById(R.id.password_input);
 
+        //Progress dialog for UX
+        pDialog = new ProgressDialog(this);
+        pDialog.setMessage("Loading...");
+        pDialog.setCancelable(false);
+
         //Buttons initialized
+        status = (TextView)findViewById(R.id.status);
         signIn = (Button)findViewById(R.id.email_sign_in);
         signIn.setOnClickListener(this);
         createAccount = (Button)findViewById(R.id.create_account);
@@ -50,6 +61,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         signOut.setOnClickListener(this);
         verify = (Button)findViewById(R.id.verify_email);
         verify.setOnClickListener(this);
+        goToMain = (Button)findViewById(R.id.goToMain);
+        goToMain.setOnClickListener(this);
 
         //Layouts initialized
         loginFields = (LinearLayout)findViewById(R.id.login_input);
@@ -61,6 +74,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         //Initialize authorization
         mAuth = FirebaseAuth.getInstance();
 
+    }
+
+    private void showDialog(){
+        if(!pDialog.isShowing()) pDialog.show();
+    }
+
+    private void hideDialog(){
+        if(pDialog.isShowing()) pDialog.dismiss();
     }
 
     private boolean validate(){
@@ -85,6 +106,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         Log.i(tag, "email: " + email);
         if(!validate()) return;
 
+        showDialog();
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -97,15 +119,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             Log.w(tag, "createUserWithEmail:failure", task.getException());
                             updateUI(null);
                         }
-
                     }
                 });
+        hideDialog();
     }
 
     private void signIn(String email, String password){
         Log.i(tag, "signIn: " + email);
         if(!validate()) return;
 
+        showDialog();
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -113,6 +136,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         if(task.isSuccessful()){
                             Log.d(tag, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            Snackbar.make(parentView, "You have Logged In!", Snackbar.LENGTH_SHORT).show();
                             updateUI(user);
                         }else{
                             Log.w(tag, "signInWithEmail:failure",task.getException());
@@ -120,17 +144,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         }
                     }
                 });
+        hideDialog();
     }
 
     private void signOut(){
+        showDialog();
         mAuth.signOut();
         updateUI(null);
+        hideDialog();
     }
 
     private void sendEmailVerification(){
         //disable button
         verify.setEnabled(false);
 
+        showDialog();
         //Send verification email
         final FirebaseUser user = mAuth.getCurrentUser();
         user.sendEmailVerification()
@@ -147,6 +175,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         }
                     }
                 });
+        hideDialog();
     }
 
 
@@ -168,12 +197,26 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             case R.id.verify_email:
                 sendEmailVerification();
                 break;
+            case R.id.goToMain:
+                startActivity(new Intent(this, MainActivity.class));
+                break;
             default:
                 break;
         }
     }
 
     private void updateUI(FirebaseUser user){
+        if(user!=null){
+            status.setText(R.string.logged_in);
+            loginButtons.setVisibility(View.GONE);
+            loginFields.setVisibility(View.GONE);
+            signedInButtons.setVisibility(View.VISIBLE);
+        }else {
+            status.setText(R.string.log_in);
+            loginButtons.setVisibility(View.VISIBLE);
+            loginFields.setVisibility(View.VISIBLE);
+            signedInButtons.setVisibility(View.GONE);
+        }
 
     }
 
@@ -183,6 +226,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         //Check if user is signed in and update UI accordingly
         FirebaseUser currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
+        startActivity(new Intent(this, MainActivity.class));
 
     }
 
