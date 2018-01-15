@@ -1,7 +1,6 @@
 package data_objects;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.content.ContextCompat;
@@ -13,7 +12,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import com.keybored.voteme.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,10 +39,10 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.BillViewHolder
     public void onBindViewHolder(BillViewHolder b, int i){
         Bill bill = billList.get(i);
         final BillViewHolder bHolder = b;
-        bHolder.chamber.setText(bill.getChamber());
-        bHolder.description.setText(bill.getDescription());
+        bHolder.chamber.setText(bill.getSponsor());
+        bHolder.description.setText(bill.getTitle());
         bHolder.leg_day.setText(bill.getLegDay());
-        bHolder.consideration.setText(bill.getConsideration());
+        bHolder.consideration.setText(bill.getSubject());
         final String url = bill.getURL();
         CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
         builder.setToolbarColor(ContextCompat.getColor(context, R.color.colorPrimary));
@@ -93,10 +91,10 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.BillViewHolder
         protected Button yay, nay;
         public BillViewHolder(View v){
             super(v);
-            description = (TextView)v.findViewById(R.id.description);
-            consideration = (TextView)v.findViewById(R.id.consideration);
+            description = (TextView)v.findViewById(R.id.title);
+            consideration = (TextView)v.findViewById(R.id.subject);
             leg_day = (TextView)v.findViewById(R.id.leg_day);
-            chamber = (TextView)v.findViewById(R.id.chamber);
+            chamber = (TextView)v.findViewById(R.id.sponsor);
             yay = (Button)v.findViewById(R.id.vote_yes);
             nay = (Button)v.findViewById(R.id.vote_no);
         }

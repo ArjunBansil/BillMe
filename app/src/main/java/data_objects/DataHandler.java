@@ -37,7 +37,7 @@ public class DataHandler implements Serializable{
                 ArrayList<Bill> list = readList();
                 String f = "";
                 for(Bill b : list){
-                    f += b.getDescription() + "\n";
+                    f += b.getTitle() + "\n";
                 }
                 Log.i("fun", f);
                 list.add(bill);

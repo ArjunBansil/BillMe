@@ -18,8 +18,8 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:textSize="20sp"
-            android:text="@string/description"
-            android:id="@+id/description"
+            android:text="@string/title"
+            android:id="@+id/title"
             android:textColor="@android:color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -28,19 +28,19 @@
             android:layout_marginStart="10dp"
             android:textSize="14sp"
             android:textColor="@android:color/black"
-            android:text="@string/consideration"
-            android:layout_below="@+id/description"
+            android:text="@string/subject"
+            android:layout_below="@+id/title"
             android:layout_marginTop="5dp"
-            android:id="@+id/consideration"
+            android:id="@+id/subject"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <TextView
             android:layout_marginStart="10dp"
             android:textSize="12sp"
-            android:text="@string/chamber"
-            android:layout_below="@+id/consideration"
-            android:id="@+id/chamber"
+            android:text="@string/sponsor"
+            android:layout_below="@+id/subject"
+            android:id="@+id/sponsor"
             android:layout_marginTop="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -50,7 +50,7 @@
             android:text="@string/leg_day"
             android:textSize="12sp"
             android:id="@+id/leg_day"
-            android:layout_below="@+id/chamber"
+            android:layout_below="@+id/sponsor"
             android:layout_marginTop="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />

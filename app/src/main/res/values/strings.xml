@@ -6,11 +6,11 @@
     <string name="propublica_api_key">25ubFmz1uqxqhvhSyzPwaUL8RoOVETV8wfCPaZl3</string>
     <string name="option1">See Upcoming Bills in the House</string>
     <string name="upcoming">Upcoming Bills</string>
-    <string name="consideration">Consideration</string>
-    <string name="description">Description</string>
+    <string name="subject">Consideration</string>
+    <string name="title">Description</string>
     <string name="bill_name">Bill Name</string>
     <string name="leg_day">Legislation Day</string>
-    <string name="chamber">Chamber</string>
+    <string name="sponsor">Chamber</string>
     <string name="yes">In Favor Of</string>
     <string name="no">Not in Favor</string>
     <string name="warning">Please click on the card to find out more about the bill before voting</string>

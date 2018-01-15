@@ -3,6 +3,7 @@ package com.keybored.voteme;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +12,16 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,8 +39,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import data_objects.AppController;
 import data_objects.Bill;
 import data_objects.BillAdapter;
 import data_objects.DataHandler;
@@ -39,12 +53,17 @@ import it.carlom.stikkyheader.core.animator.HeaderStikkyAnimator;
 
 public class ViewBills extends AppCompatActivity {
 
-    String url = "https://congress.api.sunlightfoundation.com/upcoming_bills?order=scheduled_at?apikey=";
     private ProgressDialog dialog;
-    JSONObject json = null;
+    String url = "https://api.propublica.org/congress/v1/congress/115/both/bills/introduced.json";
+    String key;
+    String header = "X-API-Key";
+   // JSONObject json = null;
     RecyclerView recList;
+    LinearLayoutManager llm;
     BillAdapter ba;
     ViewGroup view;
+    RequestQueue queue;
+    private static final String tag = "volley";
 
     private void doDialog(){
         if(!dialog.isShowing()) dialog.show();
@@ -54,133 +73,93 @@ public class ViewBills extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        queue = Volley.newRequestQueue(this);
         setContentView(R.layout.activity_view_bills);
         getSupportActionBar().hide();
         dialog = new ProgressDialog(this);
         dialog.setMessage("Please wait...");
         dialog.setCancelable(false);
-
-        String key = this.getResources().getString(R.string.sunlight_api_key);
-        url += key;
+        key = getResources().getString(R.string.propublica_api_key);
         view = (ViewGroup)findViewById(R.id.viewbills_layout);
-        new JSON_Pull().execute("params");
+        recList = (RecyclerView)findViewById(R.id.bill_list);
+        llm = new LinearLayoutManager(this);
+        jsonPull();
 
     }
 
-    public static JSONObject readJsonFromURL(String url) throws IOException, JSONException {
-        InputStream is = new URL(url).openStream();
-        try{
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-            String jsonText = readAll(rd);
-            JSONObject json = new JSONObject(jsonText);
-            is.close();
-            return json;
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return null;
-    }
+    private void jsonPull(){
+        doDialog();
 
-    private static String readAll(Reader rd) throws IOException{
-        StringBuilder sb = new StringBuilder();
-        int cp;
-        while((cp = rd.read()) != -1){
-            sb.append((char) cp);
-        }
-        return sb.toString();
-    }
 
-    private class JSON_Pull extends AsyncTask<String, Void, JSONObject> {
-        private ProgressDialog progressDialog = new ProgressDialog(ViewBills.this);
-        @Override
-        protected void onPreExecute(){
-            progressDialog.setMessage("Pulling upcoming bills");
-            progressDialog.show();
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET,
+                url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d(tag, response.toString());
 
-        }
+                try{
+                    JSONObject results = (JSONObject)response.get("results");
+                    JSONArray bills = (JSONArray)results.get("bills");
+                    ArrayList<Bill> list = new ArrayList<Bill>();
 
-        @Override
-        protected JSONObject doInBackground(String... params){
-            try{
-                return readJsonFromURL(url);
-            }catch (Exception e){
-                Log.i("failure", "Do in background failed");
-                e.printStackTrace();
-            }
-            return null;
-        }
+                    for(int i = 0; i < bills.length(); i++){
+                        JSONObject object = (JSONObject)bills.get(i);
+                        String sponsor = object.getString("sponsor_name");
+                        String url = object.getString("congressdotgov_url");
+                        String subject = object.getString("primary_subject");
+                        String title = object.getString("title");
+                        String leg_day = object.getString("introduced_date");
+                        list.add(new Bill(sponsor, leg_day, subject, title, url));
+                    }
 
-        @Override
-        protected void onPostExecute(JSONObject j){
-            super.onPostExecute(j);
-            progressDialog.dismiss();
-            json = j;
-            recList = (RecyclerView)findViewById(R.id.bill_list);
-            recList.setHasFixedSize(true);
-            LinearLayoutManager llm = new LinearLayoutManager(ViewBills.this);
-            llm.setOrientation(LinearLayoutManager.VERTICAL);
-            recList.setLayoutManager(llm);
-            ArrayList<Bill> list = new ArrayList<Bill>();
-
-            try{
-                JSONArray array = j.getJSONArray("results");
-                for(int i = 0; i < array.length(); i++){
-
-                    JSONObject object = array.getJSONObject(i);
-                    Bill b;
-                    if(object.getString("chamber").equals("senate")){
-                        b = new Bill(object.getString("chamber"), object.getString("legislative_day"),
-                                "", object.getString("context"),
-                                object.getString("url"));
+                    if(list.isEmpty()){
+                        doDialog();
+                        Snackbar.make(view, "No new bills recently!", Snackbar.LENGTH_SHORT).show();
                     }else {
-                        b = new Bill(object.getString("chamber"), object.getString("legislative_day"),
-                                object.getString("consideration"), object.getString("description"),
-                                object.getString("bill_url"));
-                    }
-                    list.add(b);
-                }
-                DataHandler dataHandler = new DataHandler(ViewBills.this);
-                ArrayList<Bill> votedList = dataHandler.readList();
-                ArrayList<Bill> finalList;
-                if(votedList == null){
-                    Log.i("fun", "Voted List is null");
-                    finalList = list;
-                }else{
-                    Log.i("fun", "Voted list isn't null");
-                    finalList = list;
-                    Iterator<Bill> i1 = finalList.iterator();
-
-                    while(i1.hasNext()){
-                        Iterator<Bill> i2 = votedList.iterator();
-                        Bill b1 = i1.next();
-                        while(i2.hasNext()){
-                            Bill b2 = i2.next();
-                            if(b1.equals(b2)){
-                                i1.remove();
-                            }
-                        }
+                        recList.setHasFixedSize(true);
+                        llm.setOrientation(LinearLayoutManager.VERTICAL);
+                        recList.setLayoutManager(llm);
+                        ba = new BillAdapter(list, getApplicationContext());
+                        recList.setAdapter(ba);
+                        doDialog();
                     }
 
+                }catch (JSONException e){
+                    e.printStackTrace();
+                    Snackbar.make(view, "Connection error...", Snackbar.LENGTH_SHORT).show();
                 }
-                for(Bill b : list){
-                    Log.i("fun", b.getDescription());
-                }
-                ba = new BillAdapter(finalList, ViewBills.this);
-                Log.i("fun", "Adapter has been initialized");
-                StikkyHeaderBuilder.stickTo(recList)
-                        .setHeader(R.id.header, view)
-                        .minHeightHeaderDim(R.dimen.min_height_header)
-                        .animator(new Animator())
-                        .build();
 
-                recList.setAdapter(ba);
-                Log.i("fun", "Adapter has been set");
-            }catch (Exception e){
-                Log.i("failure", "On Post Execute has failed");
-                e.printStackTrace();
             }
-        }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(tag, "Error: " + error.getMessage());
+                doDialog();
+                Snackbar.make(view, "Connection error...", Snackbar.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError{
+                Log.i(tag, "Key is called " + key);
+                Map<String,String> params = new HashMap<String, String>();
+                params.put("X-API-Key:", key);
+                return params;
+            }
+        };
 
+        queue.add(req);
+    }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+        queue.cancelAll(new RequestQueue.RequestFilter() {
+            @Override
+            public boolean apply(Request<?> request) {
+                //This is gud programming practice
+                return true;
+            }
+        });
     }
 
     private class Animator extends HeaderStikkyAnimator{
